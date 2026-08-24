@@ -3,112 +3,205 @@ using UnityEngine;
 public class CraneController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform upperRod;   // Left & Right
-    [SerializeField] private Transform holder;     // Up/Down & Forward/Back
+    [SerializeField] private Transform upperRod;
+    [SerializeField] private Transform holder;
 
     [Header("Movement Speed")]
     [SerializeField] private float horizontalSpeed = 2f;
     [SerializeField] private float verticalSpeed = 2f;
     [SerializeField] private float depthSpeed = 2f;
 
-    private Vector3 upperRodDirection = Vector3.zero;
-    private Vector3 holderVerticalDirection = Vector3.zero;
-    private Vector3 holderDepthDirection = Vector3.zero;
+    // Movement states
+    private bool moveLeft;
+    private bool moveRight;
+
+    private bool moveUp;
+    private bool moveDown;
+
+    private bool moveForward;
+    private bool moveBackward;
 
     private void Update()
     {
-        // Upper Rod Movement (Left / Right)
-        upperRod.position += upperRodDirection * horizontalSpeed * Time.deltaTime;
+        // =====================================================
+        // CRANE ROD
+        // X AXIS ONLY
+        // =====================================================
 
-        // Holder Vertical Movement (Local)
-        holder.localPosition += holderVerticalDirection * verticalSpeed * Time.deltaTime;
+        float xMovement = 0f;
 
-        // Holder Forward / Backward Movement (Local)
-        holder.localPosition += holderDepthDirection * depthSpeed * Time.deltaTime;
+        if (moveLeft)
+        {
+            xMovement = -1f;
+        }
+        else if (moveRight)
+        {
+            xMovement = 1f;
+        }
+
+        if (xMovement != 0f)
+        {
+            Vector3 position = upperRod.localPosition;
+
+            position.x += xMovement * horizontalSpeed * Time.deltaTime;
+
+            upperRod.localPosition = position;
+        }
+
+
+        // =====================================================
+        // HOLDER
+        // Y AXIS - UP / DOWN
+        // Z AXIS - FORWARD / BACKWARD
+        // =====================================================
+
+        float yMovement = 0f;
+        float zMovement = 0f;
+
+        if (moveUp)
+        {
+            yMovement = 1f;
+        }
+        else if (moveDown)
+        {
+            yMovement = -1f;
+        }
+
+        if (moveForward)
+        {
+            zMovement = 1f;
+        }
+        else if (moveBackward)
+        {
+            zMovement = -1f;
+        }
+
+        Vector3 holderPosition = holder.localPosition;
+
+        holderPosition.y += yMovement * verticalSpeed * Time.deltaTime;
+        holderPosition.z += zMovement * depthSpeed * Time.deltaTime;
+
+        holder.localPosition = holderPosition;
     }
 
-    #region Upper Rod Left / Right
+
+    // =========================================================
+    // CRANE ROD - LEFT
+    // =========================================================
 
     public void StartLeft()
     {
-        upperRodDirection = Vector3.left;
+        Debug.Log("START LEFT");
+
+        moveLeft = true;
+        moveRight = false;
     }
 
     public void StopLeft()
     {
-        if (upperRodDirection == Vector3.left)
-            upperRodDirection = Vector3.zero;
+        Debug.Log("STOP LEFT");
+
+        moveLeft = false;
     }
+
+
+    // =========================================================
+    // CRANE ROD - RIGHT
+    // =========================================================
 
     public void StartRight()
     {
-        upperRodDirection = Vector3.right;
+        Debug.Log("START RIGHT");
+
+        moveRight = true;
+        moveLeft = false;
     }
 
     public void StopRight()
     {
-        if (upperRodDirection == Vector3.right)
-            upperRodDirection = Vector3.zero;
+        Debug.Log("STOP RIGHT");
+
+        moveRight = false;
     }
 
-    #endregion
 
-    #region Holder Up / Down
+    // =========================================================
+    // HOLDER - UP
+    // =========================================================
 
     public void StartUp()
     {
-        holderVerticalDirection = Vector3.up;
+        moveUp = true;
+        moveDown = false;
     }
 
     public void StopUp()
     {
-        if (holderVerticalDirection == Vector3.up)
-            holderVerticalDirection = Vector3.zero;
+        moveUp = false;
     }
+
+
+    // =========================================================
+    // HOLDER - DOWN
+    // =========================================================
 
     public void StartDown()
     {
-        holderVerticalDirection = Vector3.down;
+        moveDown = true;
+        moveUp = false;
     }
 
     public void StopDown()
     {
-        if (holderVerticalDirection == Vector3.down)
-            holderVerticalDirection = Vector3.zero;
+        moveDown = false;
     }
 
-    #endregion
 
-    #region Holder Forward / Backward
+    // =========================================================
+    // HOLDER - FORWARD
+    // =========================================================
 
     public void StartForward()
     {
-        holderDepthDirection = Vector3.forward;
+        moveForward = true;
+        moveBackward = false;
     }
 
     public void StopForward()
     {
-        if (holderDepthDirection == Vector3.forward)
-            holderDepthDirection = Vector3.zero;
+        moveForward = false;
     }
+
+
+    // =========================================================
+    // HOLDER - BACKWARD
+    // =========================================================
 
     public void StartBackward()
     {
-        holderDepthDirection = Vector3.back;
+        moveBackward = true;
+        moveForward = false;
     }
 
     public void StopBackward()
     {
-        if (holderDepthDirection == Vector3.back)
-            holderDepthDirection = Vector3.zero;
+        moveBackward = false;
     }
 
-    #endregion
+
+    // =========================================================
+    // STOP ALL
+    // =========================================================
 
     public void StopAll()
     {
-        upperRodDirection = Vector3.zero;
-        holderVerticalDirection = Vector3.zero;
-        holderDepthDirection = Vector3.zero;
+        moveLeft = false;
+        moveRight = false;
+
+        moveUp = false;
+        moveDown = false;
+
+        moveForward = false;
+        moveBackward = false;
     }
 }
