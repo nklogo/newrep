@@ -2,7 +2,7 @@
 - Project name: newrep
 - Unity version: Unity 6000.5.3f1
 - Active game object:
-  - Name: pallet04
+  - Name: Blocks
   - Tag: Untagged
-  - Layer: Default
+  - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
